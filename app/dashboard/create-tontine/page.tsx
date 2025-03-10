@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { createTontine } from "@/lib/actions";
 
@@ -33,6 +34,7 @@ export default function CreateTontine() {
     stakeAmount: "",
     maxSubscriptions: "",
     frequency: "monthly",
+    isPrivate: false,
   });
 
   const handleChange = (e) => {
@@ -170,9 +172,24 @@ export default function CreateTontine() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="isPrivate"
+                    name="isPrivate"
+                    checked={formData.isPrivate}
+                    onCheckedChange={(checked) =>
+                      handleSelectChange("isPrivate", checked)
+                    }
+                  />
+                  <Label htmlFor="isPrivate">Tontine Privée</Label>
+                  <p className="text-sm text-muted-foreground ml-2">
+                    (Une tontine privée n'apparaîtra pas dans la liste publique)
+                  </p>
+                </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-              <Button
+                <Button
                   variant="outline"
                   type="button"
                   onClick={() => router.back()}

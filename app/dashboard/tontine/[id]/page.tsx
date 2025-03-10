@@ -18,6 +18,13 @@ import { getTontineById, joinTontine } from "@/lib/actions";
 import ParticipantsList from "@/components/participants-list";
 import CollectionSchedule from "@/components/collection-schedule";
 import TransactionHistory from "@/components/transaction-history";
+import ShareTontineButton from "@/components/share-tontine-button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { formatCurrency } from "@/lib/utils";
 
 // ID utilisateur fictif pour la démo (puisque nous avons supprimé l'authentification)
@@ -168,15 +175,29 @@ export default function TontineDetails() {
               <p className="text-muted-foreground">{tontine.description}</p>
             </div>
 
-            {!userIsModerator && !userIsParticipant && !isFull && (
-              <Button
-                onClick={handleJoin}
-                disabled={isJoining || !selectedPosition}
-                className="bg-tontine-primary hover:bg-tontine-primary/90"
-              >
-                {isJoining ? "Adhésion en cours..." : "Rejoindre la Tontine"}
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              <ShareTontineButton tontineId={id} isPrivate={tontine.isPrivate} />
+              {!userIsModerator && !userIsParticipant && !isFull && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <Button
+                          onClick={handleJoin}
+                          disabled={isJoining || !selectedPosition}
+                          className="bg-tontine-primary hover:bg-tontine-primary/90"
+                        >
+                          {isJoining ? "Adhésion en cours..." : "Rejoindre la Tontine"}
+                        </Button>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Vous devez choisir une position pour rejoindre la tontine !</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

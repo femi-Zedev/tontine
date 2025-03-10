@@ -42,6 +42,7 @@ const mockTontines = [
         },
       },
     ],
+    isPrivate: false,
   },
   {
     id: "2",
@@ -65,6 +66,7 @@ const mockTontines = [
         },
       },
     ],
+    isPrivate: false,
   },
   {
     id: "3",
@@ -88,6 +90,7 @@ const mockTontines = [
         },
       },
     ],
+    isPrivate: false,
   },
   {
     id: "4",
@@ -111,29 +114,32 @@ const mockTontines = [
         },
       },
     ],
+    isPrivate: false,
   },
 ]
 
 // Obtenir les tontines en fonction du type (participating, available, moderated)
 export async function getTontines(type: string) {
   // Simuler un délai d'API
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  // Filtrer en fonction de l'ID utilisateur fictif
   switch (type) {
     case "participating":
-      return mockTontines.filter((tontine) => tontine.participants.some((p) => p.userId === MOCK_USER_ID))
+      return mockTontines.filter((tontine) =>
+        tontine.participants.some((p) => p.userId === MOCK_USER_ID)
+      )
     case "available":
+      // Only show public tontines that the user hasn't joined and isn't moderating
       return mockTontines.filter(
         (tontine) =>
-          tontine.participants.length < tontine.maxSubscriptions &&
-          !tontine.participants.some((p) => p.userId === MOCK_USER_ID) &&
-          tontine.moderatorId !== MOCK_USER_ID,
+          !tontine.isPrivate &&
+          tontine.moderatorId !== MOCK_USER_ID &&
+          !tontine.participants.some((p) => p.userId === MOCK_USER_ID)
       )
     case "moderated":
       return mockTontines.filter((tontine) => tontine.moderatorId === MOCK_USER_ID)
     default:
-      return mockTontines
+      return []
   }
 }
 
@@ -153,9 +159,10 @@ export async function createTontine(data: any) {
   const newTontine = {
     id: `${mockTontines.length + 1}`,
     ...data,
-    moderatorId: MOCK_USER_ID, // Utiliser l'ID utilisateur fictif
+    moderatorId: MOCK_USER_ID,
     createdAt: new Date(),
     participants: [],
+    isPrivate: data.isPrivate || false,
   }
 
   mockTontines.push(newTontine)
@@ -201,4 +208,3 @@ export async function joinTontine(tontineId: string, position: number) {
 
   return newParticipant
 }
-
