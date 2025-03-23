@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function AuthErrorPage({
+export default async function AuthErrorPage({
   searchParams,
 }: {
   searchParams: { error?: string };
@@ -16,7 +16,7 @@ export default function AuthErrorPage({
     verification: "Le lien de vérification a expiré ou a déjà été utilisé",
   };
 
-  const message = errorMessages[error] || errorMessages.default;
+  const message = errorMessages[error.toLowerCase()] || errorMessages.default;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
